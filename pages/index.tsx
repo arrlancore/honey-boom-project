@@ -1,5 +1,9 @@
+import Head from "next/head";
+import Image from "next/image";
+
 const caption = {
   title: "WeWork",
+  description: "Find the best work!",
   signIn: "Sign In",
 
   jobDesc: "Job Description",
@@ -11,16 +15,21 @@ const caption = {
 export default function Home() {
   return (
     <div className="relative bg-white">
+      <Head>
+        <title>{caption.title} - {caption.description}</title>
+      </Head>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* header */}
         <header>
           <div className="flex items-center justify-between border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
             <div className="flex justify-start lg:w-0 lg:flex-1">
               <a href="#" className="flex items-center">
-                <img
+                <Image
                   className="h-8 w-auto sm:h-10"
                   src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
-                  alt=""
+                  alt="logo"
+                  width={47}
+                  height={40}
                 />
                 <h1 className="text-md ml-2">
                   <b>{caption.title}</b>
@@ -39,6 +48,7 @@ export default function Home() {
           </div>
         </header>
 
+        <main>
         {/* search form */}
         <section id="form" className="mt-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -102,6 +112,7 @@ export default function Home() {
         <section className="flex flex-col p-4">
           <h1>CONTENT</h1>
         </section>
+        </main>
       </div>
     </div>
   )
