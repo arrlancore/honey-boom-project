@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
-import arrowRightIcon from "../src/assets/icon/arrow-right-circle.svg";
-import arrowLeftIcon from "../src/assets/icon/arrow-left-circle.svg";
-import Image from "next/image";
 import Table, { THead, TRow } from "../../src/components/Table";
 import Header from "../../src/components/Header";
 import Text from "../../src/components/Text";
-import SearchInput from "../../src/components/SearchInput";
 import { useRouter } from "next/router";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +10,7 @@ import { AppDispatch, RootState } from "../../src/store";
 import { IGPSSummary } from "../../src/types";
 import { getGpsDetailByID } from "../../src/store/gps/gpsAction";
 import localStorageService from "../../src/services/localStorageService";
+import BackdropLoading from "../../src/components/BackdropLoading";
 
 const createPieData = (list: IGPSSummary[]) => {
   const raw = list.reduce((acc: { [key: string]: number }, value) => {
@@ -29,8 +25,6 @@ const createPieData = (list: IGPSSummary[]) => {
     value: raw[key],
   }));
 };
-
-const COLORS = ["#FFBB28", "#FF8042"];
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -144,6 +138,8 @@ export default function Detail() {
 
   return (
     <div className="relative bg-gradient-default min-h-screen">
+      <BackdropLoading open={gps.loading} />
+
       <Head>
         <title>
           {caption.title} - {caption.description}
