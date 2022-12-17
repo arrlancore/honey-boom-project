@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Button from "../src/components/Button";
 import Header from "../src/components/Header";
@@ -11,6 +11,12 @@ import SearchInput from "../src/components/SearchInput";
 import arrowRightIcon from "../src/assets/icon/arrow-right-circle.svg";
 import arrowLeftIcon from "../src/assets/icon/arrow-left-circle.svg";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../src/store";
+import { getGpsSummaries } from "../src/store/gps/gpsAction";
+import localStorageService from "../src/services/localStorageService";
+import { IGPSSummary } from "../src/types";
+import { formatDateTime } from "../src/utils";
 
 const caption = {
   title: "HoneyBoom.",
@@ -19,53 +25,21 @@ const caption = {
 };
 
 const tableHeads: THead[] = [
-  { key: "author", title: "Author" },
-  { key: "function", title: "Function" },
-  { key: "status", title: "Status" },
-  { key: "employed", title: "Employed" },
+  { key: "device_id", title: "ID" },
+  { key: "device_type", title: "Device Type" },
+  { key: "timestamp", title: "Timestamp" },
+  { key: "location", title: "Location" },
   { key: "action", title: "" },
 ];
 
-interface IGPSSummary {
-  id: string;
-  author: string;
-  function: string;
-  status: string;
-  employed: string;
-  action?: string;
-}
-
-const tableRows: TRow<IGPSSummary>[] = [
-  {
-    id: "1",
-    author: "name1",
-    function: "test",
-    status: "Online",
-    employed: "2022-02-03T10:17:44.165Z",
-  },
-  {
-    id: "2",
-    author: "name3",
-    function: "test",
-    status: "Online",
-    employed: "2022-02-03T10:17:44.165Z",
-  },
-  {
-    id: "3",
-    author: "name2",
-    function: "test",
-    status: "Online",
-    employed: "2022-02-03T10:17:44.165Z",
-  },
-];
-
-const renderers = {
+const customRenderers = {
+  timestamp: (value: string) => <span>{formatDateTime(value)}</span>,
   action: (_: unknown, gps: IGPSSummary) => {
     return (
       <Link
         title={caption.see}
         className="px-6 text-lg left-0 transition-[left] hover:text-yellow-300 hover:left-2 relative"
-        href={`/detail/${gps.id}`}
+        href={`/detail/${gps.device_id}`}
       >
         {`→`}
       </Link>
@@ -73,7 +47,14 @@ const renderers = {
   },
 };
 
-export default function Login() {
+export default function Home() {
+  const dispatch = useDispatch<AppDispatch>();
+  const gps = useSelector((state: RootState) => state.gps);
+  const tableRows: TRow<IGPSSummary>[] = gps.gpsSummaries;
+  useEffect(() => {
+    dispatch(getGpsSummaries(localStorageService.getToken() ?? ""));
+  }, []);
+
   return (
     <div className="relative bg-gradient-default min-h-screen">
       <Head>
@@ -85,7 +66,7 @@ export default function Login() {
         {/* header */}
         <Header title={caption.title} />
 
-        <main className="mt-8">
+        <main className="mt-[90px]">
           <section
             className="flex flex-col p-4 items-center justify-center min-h-screen
             mt-[-90px]"
@@ -126,7 +107,7 @@ export default function Login() {
                 <Table
                   rows={tableRows}
                   heads={tableHeads}
-                  renderers={renderers}
+                  renderers={customRenderers}
                 />
               </div>
             </div>
