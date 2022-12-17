@@ -5,10 +5,8 @@ import Header from "../src/components/Header";
 import TextField from "../src/components/TextField";
 import PasswordField from "../src/components/PasswordField";
 import Alert from "../src/components/Alert";
-import gpsService from "../src/services/gpsService";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../src/store/user/userAction";
-import { ISignUpPayload } from "../src/services/authService";
 import { AppDispatch, RootState } from "../src/store";
 import Layout from "../src/components/Layout";
 

@@ -4,7 +4,7 @@ import Table, { THead, TRow } from "../../src/components/Table";
 import Header from "../../src/components/Header";
 import Text from "../../src/components/Text";
 import { useRouter } from "next/router";
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../src/store";
 import { IGPSSummary } from "../../src/types";

@@ -5,7 +5,6 @@ import Header from "../src/components/Header";
 import TextField from "../src/components/TextField";
 import PasswordField from "../src/components/PasswordField";
 import Link from "next/link";
-import { LOGIN_URL } from "../src/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../src/store";
 import { loginUser } from "../src/store/user/userAction";
