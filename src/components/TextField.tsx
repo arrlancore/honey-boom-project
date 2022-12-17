@@ -4,11 +4,15 @@ const TextField = ({
   label,
   type_,
   icon,
+  ref,
+  name,
   ...props
 }: HTMLAttributes<HTMLInputElement> & {
   label: string;
   type_?: string;
   icon?: React.ReactNode;
+  ref?: any;
+  name?: string;
 }) => {
   const additionalStyle = icon ? "pr-10" : "";
 
@@ -21,12 +25,14 @@ const TextField = ({
         {label}
       </label>
       <input
+        name={name}
         className={`shadow rounded-md appearance-none border h-[50px]
         w-full py-2 px-3 text-gray-700 leading-tight
         focus:outline-none focus:shadow-outline
         ${additionalStyle}`}
         type={type_ ?? "text"}
         placeholder="type here.."
+        ref={ref}
         {...props}
       />
       {icon ? (
