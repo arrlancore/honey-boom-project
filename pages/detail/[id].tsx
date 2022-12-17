@@ -108,7 +108,7 @@ const renderActiveShape = (props: any) => {
 const caption = {
   title: "HoneyBoom.",
   description: "GPS Detail",
-  see: "see detail",
+  aircraft: "AirCraft",
 };
 
 const tableHeads: THead[] = [
@@ -139,6 +139,7 @@ export default function Detail() {
         })
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
@@ -162,8 +163,9 @@ export default function Detail() {
             text-white border-full border-gray-200 max-w-7xl"
             >
               <div>
+                <Text variant="head2">{id}</Text>
                 <Text variant="head2" className="mb-6">
-                  {caption.description} - {id}
+                  {caption.aircraft}
                 </Text>
                 <div className="flex items-center">
                   <Table rows={tableRows} heads={tableHeads} />
