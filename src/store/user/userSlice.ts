@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import localStorageService from "../../services/localStorageService";
 import { loginUser, signUpUser } from "./userAction";
 
 const initialState = {
@@ -18,6 +19,7 @@ const userSlice = createSlice({
       state.userToken = action.payload;
     },
     logOut: (state) => {
+      localStorageService.clearToken();
       state.isLoggedIn = false;
       state.userToken = null;
     },
@@ -42,7 +44,7 @@ const userSlice = createSlice({
     });
     builder.addCase(loginUser.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.signUpSuccess = true;
+      state.isLoggedIn = true;
       state.userToken = payload.message.loginToken;
     });
     builder.addCase(loginUser.rejected, (state, { payload }) => {

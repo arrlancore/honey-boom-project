@@ -16,7 +16,11 @@ import { AppDispatch, RootState } from "../src/store";
 import { getGpsSummaries } from "../src/store/gps/gpsAction";
 import localStorageService from "../src/services/localStorageService";
 import { IGPSSummary } from "../src/types";
-import { formatDateTime } from "../src/utils";
+import { formatDateTime, handleUnauthorizedRequest } from "../src/utils";
+import BackdropLoading from "../src/components/BackdropLoading";
+import { useRouter } from "next/router";
+import { logOut } from "../src/store/user/userSlice";
+import Layout from "../src/components/Layout";
 
 const caption = {
   title: "HoneyBoom.",
@@ -51,69 +55,81 @@ export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
   const gps = useSelector((state: RootState) => state.gps);
   const tableRows: TRow<IGPSSummary>[] = gps.gpsSummaries;
+  const router = useRouter();
+
   useEffect(() => {
     dispatch(getGpsSummaries(localStorageService.getToken() ?? ""));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <div className="relative bg-gradient-default min-h-screen">
-      <Head>
-        <title>
-          {caption.title} - {caption.description}
-        </title>
-      </Head>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {/* header */}
-        <Header title={caption.title} />
+  useEffect(() => {
+    dispatch(logOut);
+    handleUnauthorizedRequest(gps.errorCode, () => router.push("/login"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gps.errorCode]);
 
-        <main className="mt-[90px]">
-          <section
-            className="flex flex-col p-4 items-center justify-center min-h-screen
+  return (
+    <Layout>
+      <div className="relative bg-gradient-default min-h-screen">
+        <BackdropLoading open={gps.loading} />
+        <Head>
+          <title>
+            {caption.title} - {caption.description}
+          </title>
+        </Head>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          {/* header */}
+          <Header title={caption.title} />
+
+          <main className="mt-[90px]">
+            <section
+              className="flex flex-col p-4 items-center justify-center min-h-screen
             mt-[-90px]"
-          >
-            <div
-              className="flex flex-col items-center p-14 w-full rounded-3xl border-[1px]
-            text-white border-full border-gray-200 max-w-7xl"
             >
-              <div>
-                <Text variant="head2" className="mb-6">
-                  {caption.description}
-                </Text>
+              <div
+                className="flex flex-col items-center p-14 w-full rounded-3xl border-[1px]
+            text-white border-full border-gray-200 max-w-7xl"
+              >
                 <div>
-                  <section className="flex justify-between">
-                    <SearchInput className="bg-blue-100" />
-                    <div className="flex items-center justify-center">
-                      <Text variant="caption">1 of 6</Text>
-                      <div className="flex ml-4">
-                        <Image
-                          {...arrowLeftIcon}
-                          width="24"
-                          height="24"
-                          alt="prev"
-                          className="cursor-pointer hover:opacity-50"
-                        />
-                        <div className="w-2" />
-                        <Image
-                          {...arrowRightIcon}
-                          width="24"
-                          height="24"
-                          alt="next"
-                          className="cursor-pointer hover:opacity-50"
-                        />
+                  <Text variant="head2" className="mb-6">
+                    {caption.description}
+                  </Text>
+                  <div>
+                    <section className="flex justify-between">
+                      <SearchInput className="bg-blue-100" />
+                      <div className="flex items-center justify-center">
+                        <Text variant="caption">1 of 6</Text>
+                        <div className="flex ml-4">
+                          <Image
+                            {...arrowLeftIcon}
+                            width="24"
+                            height="24"
+                            alt="prev"
+                            className="cursor-pointer hover:opacity-50"
+                          />
+                          <div className="w-2" />
+                          <Image
+                            {...arrowRightIcon}
+                            width="24"
+                            height="24"
+                            alt="next"
+                            className="cursor-pointer hover:opacity-50"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </section>
+                    </section>
+                  </div>
+                  <Table
+                    rows={tableRows}
+                    heads={tableHeads}
+                    renderers={customRenderers}
+                  />
                 </div>
-                <Table
-                  rows={tableRows}
-                  heads={tableHeads}
-                  renderers={customRenderers}
-                />
               </div>
-            </div>
-          </section>
-        </main>
+            </section>
+          </main>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 }

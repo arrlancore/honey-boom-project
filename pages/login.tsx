@@ -62,7 +62,7 @@ export default function Login() {
                 <Button
                   onClick={onLoginClick}
                   className="mt-6"
-                  isLoading={true}
+                  isLoading={user.loading}
                 >
                   {caption.login}
                 </Button>

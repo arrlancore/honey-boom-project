@@ -1,11 +1,13 @@
 import dayjs from "dayjs";
 
 export const handleUnauthorizedRequest = (
-  errorCode: string,
+  errorCode: number,
   redirectToLogin: () => void
 ) => {
-  if (errorCode === "401") {
-    redirectToLogin();
+  if (errorCode === 401) {
+    setTimeout(() => {
+      redirectToLogin();
+    }, 100);
   }
 };
 

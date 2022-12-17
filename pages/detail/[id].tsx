@@ -11,6 +11,9 @@ import { IGPSSummary } from "../../src/types";
 import { getGpsDetailByID } from "../../src/store/gps/gpsAction";
 import localStorageService from "../../src/services/localStorageService";
 import BackdropLoading from "../../src/components/BackdropLoading";
+import { logOut } from "../../src/store/user/userSlice";
+import { handleUnauthorizedRequest } from "../../src/utils";
+import Layout from "../../src/components/Layout";
 
 const createPieData = (list: IGPSSummary[]) => {
   const raw = list.reduce((acc: { [key: string]: number }, value) => {
@@ -102,7 +105,6 @@ const renderActiveShape = (props: any) => {
 const caption = {
   title: "HoneyBoom.",
   description: "GPS Detail",
-  aircraft: "AirCraft",
 };
 
 const tableHeads: THead[] = [
@@ -120,6 +122,8 @@ export default function Detail() {
   const tableRows: TRow<IGPSSummary>[] = gps.gpsDetailByID;
   const pieData = createPieData(gps.gpsDetailByID);
 
+  const type = gps.gpsDetailByID[0]?.device_type || "-";
+
   const onPieEnter = (_: unknown, index: number) => {
     setActiveIndex(index);
   };
@@ -136,61 +140,68 @@ export default function Detail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  useEffect(() => {
+    dispatch(logOut);
+    handleUnauthorizedRequest(gps.errorCode, () => router.push("/login"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gps.errorCode]);
+
   return (
-    <div className="relative bg-gradient-default min-h-screen">
-      <BackdropLoading open={gps.loading} />
+    <Layout>
+      <div className="relative bg-gradient-default min-h-screen">
+        <BackdropLoading open={gps.loading} />
+        <Head>
+          <title>
+            {caption.title} - {caption.description}
+          </title>
+        </Head>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          {/* header */}
+          <Header title={caption.title} />
 
-      <Head>
-        <title>
-          {caption.title} - {caption.description}
-        </title>
-      </Head>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {/* header */}
-        <Header title={caption.title} />
-
-        <main className="mt-[90px]">
-          <section
-            className="flex flex-col p-4 items-center justify-center min-h-screen
+          <main className="mt-[90px]">
+            <section
+              className="flex flex-col p-4 items-center justify-center min-h-screen
             mt-[-90px]"
-          >
-            <div
-              className="flex flex-col items-center p-14 w-full rounded-3xl border-[1px]
-            text-white border-full border-gray-200 max-w-7xl"
             >
-              <div>
-                <Text variant="head2">{id}</Text>
-                <Text variant="head2" className="mb-6">
-                  {caption.aircraft}
-                </Text>
-                <div className="flex items-center">
-                  <Table rows={tableRows} heads={tableHeads} />
-                  <ResponsiveContainer
-                    width="100%"
-                    height="100%"
-                    className="min-w-[400px] min-h-[400px]"
-                  >
-                    <PieChart width={400} height={400}>
-                      <Pie
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        onMouseEnter={onPieEnter}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+              <div
+                className="flex flex-col items-center p-14 w-full rounded-3xl border-[1px]
+            text-white border-full border-gray-200 max-w-7xl"
+              >
+                <div>
+                  <Text variant="head2">{id}</Text>
+                  <Text variant="head2" className="mb-6">
+                    {type}
+                  </Text>
+                  <div className="flex items-center">
+                    <Table rows={tableRows} heads={tableHeads} />
+                    <ResponsiveContainer
+                      width="100%"
+                      height="100%"
+                      className="min-w-[400px] min-h-[400px]"
+                    >
+                      <PieChart width={400} height={400}>
+                        <Pie
+                          activeIndex={activeIndex}
+                          activeShape={renderActiveShape}
+                          data={pieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                          onMouseEnter={onPieEnter}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        </main>
+            </section>
+          </main>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 }

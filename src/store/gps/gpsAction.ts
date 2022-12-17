@@ -10,7 +10,10 @@ export const getGpsSummaries = createAsyncThunk(
       const { data } = await gpsService.getGpsSummary(token);
       return data;
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue({
+        message: error.message,
+        code: error.response.status,
+      });
     }
   }
 );
@@ -24,7 +27,10 @@ export const getGpsDetailByID = createAsyncThunk(
       const { data } = await gpsService.getGpsDetail(payload.token, payload.id);
       return data;
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      return rejectWithValue({
+        message: error.message,
+        code: error.response.status,
+      });
     }
   }
 );

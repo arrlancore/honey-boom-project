@@ -12,6 +12,10 @@ const saveToken = (token: string) => {
   localStorage.setItem(TOKEN_KEY, token);
 };
 
-const localStorageService = { getToken, saveToken };
+const clearToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+};
+
+const localStorageService = { getToken, saveToken, clearToken };
 
 export default localStorageService;
