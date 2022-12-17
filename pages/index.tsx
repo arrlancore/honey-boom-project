@@ -1,119 +1,138 @@
+import React, { useState } from "react";
 import Head from "next/head";
+import Button from "../src/components/Button";
+import Header from "../src/components/Header";
+import TextField from "../src/components/TextField";
+import PasswordField from "../src/components/PasswordField";
+import Link from "next/link";
+import Table, { THead, TRow } from "../src/components/Table";
+import Text from "../src/components/Text";
+import SearchInput from "../src/components/SearchInput";
+import arrowRightIcon from "../src/assets/icon/arrow-right-circle.svg";
+import arrowLeftIcon from "../src/assets/icon/arrow-left-circle.svg";
 import Image from "next/image";
 
 const caption = {
-  title: "WeWork",
-  description: "Find the best work!",
-  signIn: "Sign In",
-
-  jobDesc: "Job Description",
-  location: "Location",
-  search: "Search",
-  fulltimeOnly: "Full Time Only",
+  title: "HoneyBoom.",
+  description: "GPS Summary",
+  see: "see detail",
 };
 
-export default function Home() {
+const tableHeads: THead[] = [
+  { key: "author", title: "Author" },
+  { key: "function", title: "Function" },
+  { key: "status", title: "Status" },
+  { key: "employed", title: "Employed" },
+  { key: "action", title: "" },
+];
+
+interface IGPSSummary {
+  id: string;
+  author: string;
+  function: string;
+  status: string;
+  employed: string;
+  action?: string;
+}
+
+const tableRows: TRow<IGPSSummary>[] = [
+  {
+    id: "1",
+    author: "name1",
+    function: "test",
+    status: "Online",
+    employed: "2022-02-03T10:17:44.165Z",
+  },
+  {
+    id: "2",
+    author: "name3",
+    function: "test",
+    status: "Online",
+    employed: "2022-02-03T10:17:44.165Z",
+  },
+  {
+    id: "3",
+    author: "name2",
+    function: "test",
+    status: "Online",
+    employed: "2022-02-03T10:17:44.165Z",
+  },
+];
+
+const renderers = {
+  action: (_: unknown, gps: IGPSSummary) => {
+    return (
+      <Link
+        title={caption.see}
+        className="px-6 text-lg left-0 transition-[left] hover:text-yellow-300 hover:left-2 relative"
+        href={`/detail/${gps.id}`}
+      >
+        {`→`}
+      </Link>
+    );
+  },
+};
+
+export default function Login() {
   return (
-    <div className="relative bg-white">
+    <div className="relative bg-gradient-default min-h-screen">
       <Head>
-        <title>{caption.title} - {caption.description}</title>
+        <title>
+          {caption.title} - {caption.description}
+        </title>
       </Head>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* header */}
-        <header>
-          <div className="flex items-center justify-between border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
-            <div className="flex justify-start lg:w-0 lg:flex-1">
-              <a href="#" className="flex items-center">
-                <Image
-                  className="h-8 w-auto sm:h-10"
-                  src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=600"
-                  alt="logo"
-                  width={47}
-                  height={40}
+        <Header title={caption.title} />
+
+        <main className="mt-8">
+          <section
+            className="flex flex-col p-4 items-center justify-center min-h-screen
+            mt-[-90px]"
+          >
+            <div
+              className="flex flex-col items-center p-14 w-full rounded-3xl border-[1px]
+            text-white border-full border-gray-200 max-w-7xl"
+            >
+              <div>
+                <Text variant="head2" className="mb-6">
+                  {caption.description}
+                </Text>
+                <div>
+                  <section className="flex justify-between">
+                    <SearchInput className="bg-blue-100" />
+                    <div className="flex items-center justify-center">
+                      <Text variant="caption">1 of 6</Text>
+                      <div className="flex ml-4">
+                        <Image
+                          {...arrowLeftIcon}
+                          width="24"
+                          height="24"
+                          alt="prev"
+                          className="cursor-pointer hover:opacity-50"
+                        />
+                        <div className="w-2" />
+                        <Image
+                          {...arrowRightIcon}
+                          width="24"
+                          height="24"
+                          alt="next"
+                          className="cursor-pointer hover:opacity-50"
+                        />
+                      </div>
+                    </div>
+                  </section>
+                </div>
+                <Table
+                  rows={tableRows}
+                  heads={tableHeads}
+                  renderers={renderers}
                 />
-                <h1 className="text-md ml-2">
-                  <b>{caption.title}</b>
-                </h1>
-              </a>
-            </div>
-
-            <div className="items-center justify-end">
-              <a
-                href="#"
-                className="ml-8 inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700"
-              >
-                {caption.signIn}
-              </a>
-            </div>
-          </div>
-        </header>
-
-        <main>
-        {/* search form */}
-        <section id="form" className="mt-5">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="mb-4 min-w-[300px]">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="description"
-              >
-                {caption.jobDesc}
-              </label>
-              <input
-                className="shadow rounded-md appearance-none border h-[50px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="description"
-                type="text"
-                placeholder={`such as "ruby" or "java"`}
-              />
-            </div>
-
-            <div className="mb-4 min-w-[300px]">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="location"
-              >
-                {caption.location}
-              </label>
-              <input
-                className="shadow rounded-md appearance-none border h-[50px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="location"
-                type="text"
-                placeholder="city name, zip code, or other.."
-              />
-            </div>
-
-            <div className="flex items-center justify-between md:justify-start">
-              <div className="flex items-center mb-4">
-                <input
-                  id="fulltime"
-                  type="checkbox"
-                  defaultValue=""
-                  className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor="fulltime"
-                  className="ml-2 text-sm font-medium text-gray-700 "
-                >
-                  {caption.fulltimeOnly}
-                </label>
               </div>
-
-              <button
-                className="ml-8 min-w-[120px] h-[50px] inline-flex items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-gray-700 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-gray-900"
-              >
-                <div className="base-loader base-loader-light" />
-                {caption.search}
-              </button>
             </div>
-          </div>
-        </section>
-
-        {/* content */}
-        <section className="flex flex-col p-4">
-          <h1>CONTENT</h1>
-        </section>
+          </section>
         </main>
       </div>
     </div>
-  )
+  );
 }
