@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./slices/user";
+import userReducer from "./user/userSlice";
+import gpsReducer from "./gps/gpsSlice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    gps: gpsReducer,
   },
 });
 

@@ -7,7 +7,7 @@ import PasswordField from "../src/components/PasswordField";
 import Alert from "../src/components/Alert";
 import gpsService from "../src/services/gpsService";
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser } from "../src/store/userAction";
+import { signUpUser } from "../src/store/user/userAction";
 import { ISignUpPayload } from "../src/services/authService";
 import { AppDispatch, RootState } from "../src/store";
 
@@ -50,7 +50,7 @@ export default function SignUp() {
         {/* header */}
         <Header title={caption.title} />
 
-        <main className="mt-8">
+        <main className="mt-[90px]">
           <section
             className="flex flex-col p-4 items-center justify-center min-h-screen
             mt-[-90px]"

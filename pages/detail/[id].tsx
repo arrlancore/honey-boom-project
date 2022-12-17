@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import arrowRightIcon from "../src/assets/icon/arrow-right-circle.svg";
@@ -10,13 +10,25 @@ import Text from "../../src/components/Text";
 import SearchInput from "../../src/components/SearchInput";
 import { useRouter } from "next/router";
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../src/store";
+import { IGPSSummary } from "../../src/types";
+import { getGpsDetailByID } from "../../src/store/gps/gpsAction";
+import localStorageService from "../../src/services/localStorageService";
 
-const data = [
-  // { name: "Group A", value: 400 },
-  // { name: "Group B", value: 300 },
-  { name: "Group C", value: 300 },
-  { name: "Group D", value: 200 },
-];
+const createPieData = (list: IGPSSummary[]) => {
+  const raw = list.reduce((acc: { [key: string]: number }, value) => {
+    const count = acc[value.location] ? acc[value.location] + 1 : 1;
+    acc[value.location] = count;
+
+    return acc;
+  }, {});
+
+  return Object.keys(raw).map((key) => ({
+    name: key,
+    value: raw[key],
+  }));
+};
 
 const COLORS = ["#FFBB28", "#FF8042"];
 
@@ -104,38 +116,30 @@ const tableHeads: THead[] = [
   { key: "location", title: "Location" },
 ];
 
-interface IGPSDetail {
-  id: string;
-  timestamp: string;
-  location: string;
-}
-
-const tableRows: TRow<IGPSDetail>[] = [
-  {
-    id: "1",
-    timestamp: "2022-02-03T10:17:44.165Z",
-    location: "L1",
-  },
-  {
-    id: "2",
-    timestamp: "2022-02-03T10:17:44.165Z",
-    location: "L2",
-  },
-  {
-    id: "3",
-    timestamp: "2022-02-03T10:17:44.165Z",
-    location: "L1",
-  },
-];
-
 export default function Detail() {
   const router = useRouter();
   const { id } = router.query;
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const gps = useSelector((state: RootState) => state.gps);
+  const tableRows: TRow<IGPSSummary>[] = gps.gpsDetailByID;
+  const pieData = createPieData(gps.gpsDetailByID);
+
   const onPieEnter = (_: unknown, index: number) => {
     setActiveIndex(index);
   };
+
+  useEffect(() => {
+    if (id) {
+      dispatch(
+        getGpsDetailByID({
+          token: localStorageService.getToken() ?? "",
+          id: id as string,
+        })
+      );
+    }
+  }, [id]);
 
   return (
     <div className="relative bg-gradient-default min-h-screen">
@@ -148,7 +152,7 @@ export default function Detail() {
         {/* header */}
         <Header title={caption.title} />
 
-        <main className="mt-8">
+        <main className="mt-[90px]">
           <section
             className="flex flex-col p-4 items-center justify-center min-h-screen
             mt-[-90px]"
@@ -172,7 +176,7 @@ export default function Detail() {
                       <Pie
                         activeIndex={activeIndex}
                         activeShape={renderActiveShape}
-                        data={data}
+                        data={pieData}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}

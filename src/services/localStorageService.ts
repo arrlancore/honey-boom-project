@@ -1,9 +1,11 @@
 const TOKEN_KEY = "userToken";
 
 const getToken = () => {
-  const userToken = JSON.parse(localStorage.getItem(TOKEN_KEY) || "");
-
-  return userToken;
+  const userToken = localStorage.getItem(TOKEN_KEY);
+  if (userToken) {
+    return "Bearer " + userToken;
+  }
+  return null;
 };
 
 const saveToken = (token: string) => {

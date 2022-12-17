@@ -1,15 +1,22 @@
 import { GPS_DETAIL_URL, GPS_URL, LOGIN_URL, SIGNUP_URL } from "../constants";
+import axios from "axios";
 
 function getGpsSummary(token: string) {
-  const headers = new Headers();
-  headers.append("Authorization", token);
-  return fetch(GPS_URL, { headers });
+  return axios.get(GPS_URL, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
 }
 
 function getGpsDetail(token: string, id: string) {
-  const headers = new Headers();
-  headers.append("Authorization", token);
-  return fetch(GPS_DETAIL_URL.replace("{id}", id), { headers });
+  return axios.get(GPS_DETAIL_URL.replace("{id}", id), {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token,
+    },
+  });
 }
 
 const gpsService = {
