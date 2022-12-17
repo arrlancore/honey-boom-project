@@ -26,4 +26,11 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  .bg-gradient-default {
+    background-color: #00002d;
+    opacity: 0.8;
+    background-image: radial-gradient(#444cf7 0.5px, #00002d 0.5px);
+    background-size: 10px 10px;
+  }
 }
